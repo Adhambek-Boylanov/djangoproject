@@ -5,11 +5,14 @@ from django.core.exceptions import ValidationError
 
 from .models import *
 
-
-
 class SearchForm(forms.Form):
-    title = forms.CharField(max_length=150, label='News',
-                                widget=forms.TextInput(attrs={"class":"form-control"}))
+    q = forms.CharField(
+        max_length=150,
+        required=False,
+        label='Search news',
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Search news..."})
+    )
+
 
 # class NewsForm(forms.Form):
 #     title = forms.CharField(max_length=150,label='News',

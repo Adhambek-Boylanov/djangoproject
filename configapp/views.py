@@ -7,13 +7,22 @@ from .models import *
 from .forms import NewsForm,SearchForm
 from .models import *
 def info(request):
-    cat = Category.objects.all()
-    news = News.objects.all()
-    context = {
-        "cat":cat,
-        "news":news
-    }
-    return render(request,'index.html',context=context)
+    form = SearchForm(request.GET)  # GET so‘rovini formga bog‘laymiz
+    news = News.objects.all()        # dastlab barcha yangiliklar
+    categories = Category.objects.all()  # kategoriya ro‘yxati
+
+    if form.is_valid():
+        query = form.cleaned_data.get('q')
+        if query:
+            news = news.filter(title__icontains=query)  # title bo‘yicha qidiruv
+
+    return render(request, 'index.html', {
+        'news': news,
+        'form': form,
+        'cat': categories,
+        'title': 'News List'
+    })
+
 
 def category(request,pk):
     cat = Category.objects.all()
@@ -63,11 +72,6 @@ def update_new(request,pk):
         form = NewsForm(instance=new)
     return render(request,'update_new.html',{'form':form,'new':new})
 
-
-def search(request):
-    if request.method == "POST":
-        form = SearchForm(request.POST)
-        if form.is_valid():
 
 
 
